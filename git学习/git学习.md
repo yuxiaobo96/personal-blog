@@ -83,3 +83,45 @@ git stash pop
 
 1. 首先使用`git log`找到其他分之此bug修改的版本（commit信息）
 2. 在当前分之：git cherry-pick +需要复制的commit版本号（前7位就好）
+
+### 为git中常用的命令增加别名
+
+1. 使用命令：
+git config --global alias.别名 + 要修改的命令
+如：git config --global alias.st status
+         git config --global alias.co checkout
+2. 配置Git的时候，加上`--global`是针对当前用户起作用的，如果不加，那只针对当前的仓库起作用。
+    每个仓库的Git配置文件都放在`.git/config`文件中：
+
+```bash
+$personal-blog git:(master) cat .git/config
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/yuxiaobo96/personal-blog.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+
+```
+
+而当前用户的Git配置文件放在用户主目录下的一个隐藏文件`.gitconfig`中：
+
+```bash
+$ ~ cat .gitconfig
+[user]
+	name = yuxiaobo
+	email = yuxiaobogo@163.com
+[alias]
+	st = status
+```
+
+{{< note >}}
+
+若配置错误，可在这两个文件下编辑修改或删除。
+
+{{< note >}}
