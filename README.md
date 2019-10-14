@@ -1,3 +1,3 @@
 # personal-blog
 
-简易博客
+个人总结
