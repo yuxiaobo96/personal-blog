@@ -127,3 +127,4 @@ $ ~ cat .gitconfig
 {{< note >}}
 
 增加别名
+配置~/.gitconfig
