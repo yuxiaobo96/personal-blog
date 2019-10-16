@@ -1,7 +1,7 @@
 ---
 title: git-learn
 ---
-### 回退 版本
+### 回退版本
 
 1. 当在工作区修改文件，还没`git add .`时：
 git checkout .
