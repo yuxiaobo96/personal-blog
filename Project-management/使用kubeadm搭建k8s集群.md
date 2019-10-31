@@ -216,14 +216,31 @@ deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
 
 ### 配置镜像源来拉取镜像
 
+1. 使用以下命令查看需要的镜像：
+
+```shell
+kubeadm config images list
+```
+
+2. 先创建一个以`.sh`结尾的文件，如`shell.sh`，给予该文件可执行权限：
+
+```shell
+chmod u+x shell.sh
+```
+
+将要执行的shell脚本（在步骤4中）放进去。
+
+3. 然后在该文件的目录下输入命令`./shell.sh`，运行此文件，等待一段时间，即可拉取需要的镜像。
+
+4. 以下是 shell 脚本
 shell脚本：
 
 ```shell
-images=(
-    kube-apiserver:v1.16.1
-     kube-controller-manager:v1.16.1
-     kube-scheduler:v1.16.1
-     kube-proxy:v1.16.1
+images=( #根据步骤1列出的镜像来更改相应的镜像版本
+    kube-apiserver:v1.16.2
+     kube-controller-manager:v1.16.2
+     kube-scheduler:v1.16.2
+     kube-proxy:v1.16.2
      pause:3.1
      etcd:3.3.15-0
      coredns:1.6.2
