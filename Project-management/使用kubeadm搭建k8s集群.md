@@ -337,15 +337,15 @@ kube-system   kube-scheduler-yuxiaobo-ubuntu             1/1     Running   0    
 1. 查看之前`kubeadm init`输出的最后一行内容（以下是本集群初始化后生成的内容），即为加入节点的命令：
 
 ```shell
-kubeadm join 10.0.2.15:6443 --token qccdax.wughn2tt1ut05vse \
-    --discovery-token-ca-cert-hash sha256:918edf8a7d7f6d35322c3ac03e40cd5ce1861e66b208c344aa1225f81e8e4a72
+kubeadm join 192.168.1.177:6443 --token sm6uji.x9ze9c54qopm4r3c \
+    --discovery-token-ca-cert-hash sha256:ff2a7cb4df8dc6e4767051e8a69f14837a0a3ef8164f8c2d52a8970f6463d069
 ```
 
 2. 在node节点上执行该命令：
 
 ```shell
-kubeadm join 10.0.2.15:6443 --token qccdax.wughn2tt1ut05vse \
-    --discovery-token-ca-cert-hash sha256:918edf8a7d7f6d35322c3ac03e40cd5ce1861e66b208c344aa1225f81e8e4a72
+kubeadm join 192.168.1.177:6443 --token sm6uji.x9ze9c54qopm4r3c \
+    --discovery-token-ca-cert-hash sha256:ff2a7cb4df8dc6e4767051e8a69f14837a0a3ef8164f8c2d52a8970f6463d069
 ```
 
 3. 等待5分钟，查看集群状态（仅master）
@@ -354,7 +354,9 @@ kubeadm join 10.0.2.15:6443 --token qccdax.wughn2tt1ut05vse \
 kubectl get pods
 ```
 
-**注意**：多节点k8s集群搭建完毕
+**注意**：在加入节点前，需要检查node机器是否可以与master主机的网络通信。
+
+综上，使用kubeadm搭建多节点k8s集群完成。
 
 4. 以下是搭建过程中需要的工具或者一些疑问解答
 
