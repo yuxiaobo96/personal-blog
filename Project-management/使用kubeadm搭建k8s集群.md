@@ -167,11 +167,10 @@ ssh username@机器IP地址
 从节点：k8s-node1
 从节点：k8s-node2
 
-1. 设置docker和kubelet开机自启动
+1. 设置docker开机自启动
 
 ```shell
 systemctl enable docker && systemctl start docker
-systemctl enable kubelet && systemctl start kubelet
 ````
 
 ### 安装及配置 docker
@@ -218,9 +217,26 @@ sudo systemctl restart docker
 
 ### 配置k8s源信息来下载 kubeadm,kubectl.kubelet
 
-在 `/etc/apt/sources.list.d/kubernetes.list` 文档下加入：
+kubectl 可按照官网上的 [步骤](https://kubernetes.io/docs/tasks/tools/install-kubectl/)安装
 
+安装 kubeadm、kubelet 需要配置国内源，使用以下命令即可（可以使用的国内源）：
+
+```shell
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
 deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm
+sudo apt-mark hold kubelet kubeadm
+```
+
+设置 kubelet 开机自启动
+
+```shell
+systemctl enable kubelet && systemctl start kubelet
+```
 
 ### 配置镜像源来拉取镜像
 
@@ -236,11 +252,7 @@ kubeadm config images list
 chmod u+x shell.sh
 ```
 
-将要执行的shell脚本（在步骤4中）放进去。
-
-3. 然后在该文件的目录下输入命令`./shell.sh`，运行此文件，等待一段时间，即可拉取需要的镜像。
-
-4. 以下是 shell 脚本
+3. 以下是 作者的shell 脚本，需要根据步骤1命令所列出的配置版本自行更改，
 shell脚本：
 
 ```shell
@@ -259,6 +271,8 @@ for imageName in ${images[@]} ; do
     docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/$imageName k8s.gcr.io/$imageName
 done
 ```
+
+4. 然后在该文件的目录下输入命令`./shell.sh`，运行此文件，等待一段时间，即可拉取需要的镜像。
 
 ### 更改cgroup driver
 
@@ -291,12 +305,12 @@ systemctl restart docker
 
 ### 给master节点安装网络插件（推荐Calico）
 
-1. 这一步是为了与其他node节点通信
+1. 这一步是为了与其他node节点通信,
 首先需使用命令`kubeadm reset`使主机恢复原状。
 然后使用以下命令初始化主机：
 
 ```shell
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 #为了避免网络插件的IP地址网段与k8s集群所使用的IP地址网段冲突，这里建议使用 10.0.0.0/16
 ```
 
 **注意**：记录该命令的输出内容，方便下面的步骤使用
