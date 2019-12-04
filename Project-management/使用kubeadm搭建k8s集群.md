@@ -108,7 +108,10 @@ sudo rm /var/lib/dpkg/lock
 ### 清除可能与 k8s 冲突的设置
 
 1. 关闭防火墙：
-`ufw disable`
+
+```shell
+ufw disable
+```
 
 2. 禁用 SELinux：
 
@@ -117,7 +120,7 @@ apt install -y selinux-utils
 setenforce 0
 ```
 
-1. 清除 iptables（可不进行此操作）
+3. 清除 iptables（可不进行此操作）
 避免自定义 iptables 影响 k8s 服务工作，建议自定义需求通过 k8s 实现，如果满足不了，安装好 k8s 后，再配置自定义 iptables 。
 
 ```shell
@@ -128,7 +131,7 @@ apt remove --purge ufw
 apt remove --purge iptables-persist
 ```
 
-1. 关闭虚拟交换
+4. 关闭虚拟交换
 
 ```shell
 # 把根目录文件系统设为可读写
@@ -152,9 +155,9 @@ sudo free -m
 
 ```
 
-1. 控制平面节点（即主节点）需分配两个cpu；node节点一个就好
+5. 控制平面节点（即主节点）需分配两个cpu；node节点一个就好
 
-1. 安装ssh客户端及服务端：进行主从节点间的访问
+6. 安装ssh客户端及服务端：进行主从节点间的访问
 
 SSH分客户端openssh-client和服务端openssh-server，ubuntu默认情况下是安装了客户端openssh-client，可以通过命令`dpkg -l | grep ssh`查询。
 
@@ -183,21 +186,19 @@ sudo service ssh start
 登录SSH
 
 ssh username@机器IP地址
+
 其中，username为对应IP地址机器上的用户，需要输入密码。
+
 断开连接：exit
 
-1. 记得修改主机名，更好记忆
+7. 记得修改主机名，更好记忆
 
 如：
 主节点：k8s-master
+
 从节点：k8s-node1
+
 从节点：k8s-node2
-
-1. 设置docker开机自启动
-
-```shell
-systemctl enable docker && systemctl start docker
-````
 
 ### 安装及配置 docker
 
@@ -228,7 +229,13 @@ systemctl enable docker && systemctl start docker
 如果提示 get ......dial unix /var/run/docker.sock权限不够，则修改/var/run/docker.sock权限：
 `sudo chmod a+rw /var/run/docker.sock`
 
-3. 配置镜像，阿里镜像加速（可有可无）
+3. 设置docker开机自启动
+
+```shell
+systemctl enable docker && systemctl start docker
+```
+
+4. 配置镜像，阿里镜像加速（可有可无）
 
 ```shell
 sudo mkdir -p /etc/docker
