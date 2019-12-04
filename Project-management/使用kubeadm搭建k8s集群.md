@@ -290,10 +290,10 @@ shell脚本：
 
 ```shell
 images=( #根据步骤1列出的镜像来更改相应的镜像版本
-    kube-apiserver:v1.16.2
-     kube-controller-manager:v1.16.2
-     kube-scheduler:v1.16.2
-     kube-proxy:v1.16.2
+    kube-apiserver:v1.16.3
+     kube-controller-manager:v1.16.3
+     kube-scheduler:v1.16.3
+     kube-proxy:v1.16.3
      pause:3.1
      etcd:3.3.15-0
      coredns:1.6.2
@@ -305,7 +305,7 @@ for imageName in ${images[@]} ; do
 done
 ```
 
-4. 然后在该文件的目录下输入命令`./shell.sh`，运行此文件，等待一段时间，即可拉取需要的镜像。
+4. 然后在该文件的目录下输入命令`./shell.sh`或者`bash shell.sh`(有时为加快开机速度，系统使用dash代替bash，此时`./shell.sh`不起作用))运行此文件，等待一段时间，即可拉取需要的镜像。
 
 ### 更改cgroup driver
 
@@ -334,7 +334,7 @@ systemctl restart docker
 **注意**：到这为止，单个节点的k8s集群的配置就完成了。
 可以使用命令 `kubeadm init`进行初始化，再根据输出的内容进行操作。
 
-也可搭建多节点集群，推荐一master几点，两node节点，每个节点的基本配置都相同，即以上步骤。
+也可搭建多节点集群，推荐一master节点，两node节点，每个节点的基本配置都相同，即以上步骤。
 
 ### 给master节点安装网络插件（推荐Calico）
 
