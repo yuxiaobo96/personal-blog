@@ -348,6 +348,21 @@ kube-system   kube-scheduler-yuxiaobo-ubuntu             1/1     Running   0    
 
 ### 将node节点加入集群
 
+前提：
+在将node节点加入到集群之前，需要在master节点上获得token和sha256码（即`--discovery-token-ca-cert-hash`）。
+token在k8s集群创建后会自动生成，但仅24小时内有效，可以用以下命令重新创建：
+
+```shell
+kubeadm token list # 列出已存在的token
+kubeadm token create # 如果token已过期，则重新创建
+```
+
+获得集群的sha256码，命令如下：
+
+```shell
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+```
+
 1. 查看之前`kubeadm init`输出的最后一行内容（以下是本集群初始化后生成的内容），即为加入节点的命令：
 
 ```shell
@@ -372,7 +387,22 @@ kubectl get pods
 
 综上，使用kubeadm搭建多节点k8s集群完成。
 
-4. 以下是搭建过程中需要的工具或者一些疑问解答
+4. 若想在node节点上控制集群，需将控制平面节点（即master节点）上的 `/etc/kubernetes/admin.conf`文件复制到 node 节点上（此`admin.conf`文件为用户提供对集群的超级用户特权），命令如下：
+
+```shell
+cd /etc/kubernetes
+scp admin.conf root@node-host-ip:/etc/kubernetes/admin.conf
+```
+
+**注意**：`admin.conf`有文件权限的限制，所以需要先使用 chomd 改变文件的权限，再进行复制
+
+### 在控制平面节点上安装 dash-board
+
+这里不做叙述，请参考[0x06节安装 Dashboard 插件](https://tomoyadeng.github.io/blog/2018/10/12/k8s-in-ubuntu18.04/index.html)。
+
+### 其他问题
+
+1. 以下是搭建过程中需要的工具或者一些疑问解答
 
 - 阿里云镜像仓库地址：
 
