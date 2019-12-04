@@ -13,6 +13,32 @@ content: l流程和坑
 
 3. 在教程中有与主机共享文件夹这一步骤，个人觉得没多大用
 
+4. 在安装虚拟机时，可能会遇到`Kernel driver not installed`的问题（即内核驱动没有安装或者启动）。
+使用命令`lsmod`查看virtualbox的内核驱动是否加载，包含四个驱动，分别是：`vboxpci`、`vboxnetadp`、`vboxnetflt`、`vboxdrv`。
+按照以下步骤进行安装和启动：
+
+首先安装 build tools和 kernel header
+
+```shell
+sudo apt-get install build-essential module-assistant
+sudo m-a prepare
+```
+
+安装virtualbox-dkms
+
+```shell
+sudo apt-get install virtualbox-dkms
+```
+
+重新配置 dkms并加载vboxdrv 模块
+
+```shell
+sudo dpkg-reconfigure virtualbox-dkms
+sudo modprobe vboxdrv
+```
+
+然后 virtualbox 就能正常启动了
+
 ## 配置 ubuntu 虚拟机
 
 ### 实现主机与虚拟机双向复制黏贴
@@ -312,6 +338,12 @@ systemctl restart docker
 ```shell
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16 #为了避免网络插件的IP地址网段与k8s集群所使用的IP地址网段冲突，这里建议使用 10.0.0.0/16
 ```
+
+三大内网：
+
+C类：192.168.0.0-192.168.255.255
+B类：172.16.0.0-172.31.255.255
+A类：10.0.0.0-10.255.255.255
 
 **注意**：记录该命令的输出内容，方便下面的步骤使用
 
